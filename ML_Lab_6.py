@@ -3,145 +3,151 @@
 
 # In[1]:
 
-
 import numpy as np
 import pandas as pd
-df=pd.read_excel("embeddingsdatalabel.xlsx")
+df=pd.read_excel("embeddingsdata (1).xlsx")
 df
 
 
 # In[2]:
 
 
-import matplotlib.pyplot as plt
-
-
-f1 = df['embed_1']
-f2 = df['embed_2']
-
-plt.scatter(f1, f2)
-plt.xlabel('Feature1')
-plt.ylabel('Feature2')
-plt.title('Scatter Plot of Feature1 vs Feature2')
-plt.show()
-
-
-# In[6]:
-
-
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-
-
-# Select one feature as the independent variable and the other as the dependent variable
-independent_feature = np.array(df['embed_1']).reshape(-1, 1)
-dependent_feature = np.array(df['embed_2'])
-
-# Create a Linear Regression model
-model = LinearRegression()
-model.fit(independent_feature, dependent_feature)
-
-# Predict the values
-predicted_values = model.predict(independent_feature)
-
-# Calculate the mean squared error
-mse = mean_squared_error(dependent_feature, predicted_values)
-print(f"Mean Squared Error: {mse:.2f}")
-
-
-# In[7]:
-
-
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
-
-# Select one feature as the independent variable and the other as the dependent variable
-independent_feature = np.array(df['embed_1']).reshape(-1, 1)
-dependent_feature = np.array(df['embed_2'])
-
-# Create a Linear Regression model
-model = LinearRegression()
-model.fit(independent_feature, dependent_feature)
-
-# Predict the values
-predicted_values = model.predict(independent_feature)
-
-# Calculate the mean squared error
-mse = mean_squared_error(dependent_feature, predicted_values)
-print(f"Mean Squared Error: {mse:.2f}")
-
-# Plot the linear regression line
-plt.scatter(independent_feature, dependent_feature, label='Data points')
-plt.plot(independent_feature, predicted_values, color='red', linewidth=2, label='Linear Regression')
-plt.xlabel('Feature1')
-plt.ylabel('Feature2')
-plt.legend()
-plt.show()
-
-
-# In[10]:
-
-
 import pandas as pd
+import matplotlib.pyplot as plt
+
+#Loading the dataset 
+df = pd.read_excel("embeddingsdata (1).xlsx")
+
+#Loading 2 features that having numeric values only
+f_a = df['embed_1']
+f_b = df['embed_2']
+
+# Creates a scatter plot
+plt.figure(figsize=(8, 6))
+plt.scatter(f_a, f_b, color='blue', alpha=0.5)
+
+# Add labels and title
+plt.xlabel('embed_1')
+plt.ylabel('embed_2')
+plt.title('Scatter Plot of embed_1 vs embed_2')
+
+# Shows the plot
+plt.grid(True)
+plt.show()
+
+
+# In[3]:
+
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+import pandas as pd
+import matplotlib.pyplot as plt
 
-# Create a DataFrame from the data
+# Loading the dataset
+df = pd.read_excel("embeddingsdata (1).xlsx")
 
-# Create the linear regression model with Feature1 as the independent variable
-model_f1 = LinearRegression()
-model_f1.fit(df[['embed_1']], df['embed_2'])  # Feature2 as the dependent variable
+# Assume 'embed_2' is the independent variable
+independent_variable = df['embed_2']
+dependent_variable = df['embed_1']
 
-# Predict the values using the model
-predictions_f1 = model_f1.predict(df[['embed_1']])
+# Reshape the data as sklearn's LinearRegression model expects 2D array
+independent_variable = independent_variable.values.reshape(-1, 1)
+dependent_variable = dependent_variable.values.reshape(-1, 1)
 
-# Calculate the mean squared error for Feature1 as the independent variable
-mse_f1 = mean_squared_error(df['embed_2'], predictions_f1)
-print(f"Mean Squared Error (Feature1 as independent variable): {mse_f1:.2f}")
+# Create a linear regression model
+model = LinearRegression()
+model.fit(independent_variable, dependent_variable)
 
-# Create the linear regression model with Feature2 as the independent variable
-model_f2 = LinearRegression()
-model_f2.fit(df[['embed_2']], df['embed_1'])  # Feature1 as the dependent variable
+# Predict the values
+predicted_values = model.predict(independent_variable)
 
-# Predict the values using the model
-predictions_f2 = model_f2.predict(df[['embed_2']])
+# Calculate mean squared error
+mse = mean_squared_error(dependent_variable, predicted_values)
+print(f'Mean Squared Error: {mse}')
 
-# Calculate the mean squared error for Feature2 as the independent variable
-mse_f2 = mean_squared_error(df['embed_1'], predictions_f2)
-print(f"Mean Squared Error (Feature2 as independent variable): {mse_f2:.2f}")
+# Create a scatter plot
+plt.figure(figsize=(8, 6))
+plt.scatter(independent_variable, dependent_variable, color='blue', alpha=0.5)
+
+# Plot the regression line
+plt.plot(independent_variable, predicted_values, color='red')
+
+# Add labels and title
+plt.xlabel('embed_1')
+plt.ylabel('embed_2')
+plt.title('Linear Regression Model: embed_1 vs embed_2')
+
+# Show plot
+plt.grid(True)
+plt.show()
 
 
-# In[13]:
+# In[4]:
 
-
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-df=pd.read_excel("embeddingsdatalabel.xlsx")
-# Load your dataset
-# Assuming 'X' contains your feature vectors and 'y' contains the corresponding labels
+#Load the dataset
+df = pd.read_excel("embeddingsdata (1).xlsx")
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-# Initialize the logistic regression model
-logistic_model = LogisticRegression(solver='liblinear', C=1.0, penalty='l2', max_iter=100)
+# Assuming X_train, y_train, X_test, y_test are your training and test sets
 
-# Train the model on the training data
+# Initialize the Logistic Regression model
+logistic_model = LogisticRegression()
+
+binary_dataframe = df[df['Label'].isin([0, 1])]
+X = binary_dataframe[['embed_1', 'embed_2']]
+y = binary_dataframe['Label']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train the Logistic Regression model on the training data
 logistic_model.fit(X_train, y_train)
-# Make predictions on the test set
-y_pred = logistic_model.predict(X_test)
 
-# Calculate the accuracy of the model
-a = accuracy_score(y_test, y_pred)
-print("Test Set Accuracy: {:.2f}%".format(a * 100))
+# Use the trained model to make predictions on the test set
+predictions = logistic_model.predict(X_test)
 
-
-# In[ ]:
+# Calculate accuracy by comparing predicted labels to actual labels in the test set
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy of Logistic Regression on the test set: {accuracy * 100:.2f}%")
 
 
+# In[5]:
 
+import pandas as pd
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import StandardScaler
 
+# Load the dataset
+df = pd.read_excel("embeddingsdata (1).xlsx")
+
+# Assuming the target variable is 'Label' here
+target_variable = df['Label']
+
+# Extracting features
+X = df[['embed_1', 'embed_2']]
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, target_variable, test_size=0.2, random_state=42)
+
+# Decision Tree Regressor
+reg_tree = DecisionTreeRegressor(random_state=42)
+reg_tree.fit(X_train, y_train)
+y_pred_tree = reg_tree.predict(X_test)
+mse_tree = mean_squared_error(y_test, y_pred_tree)
+print(f"Decision Tree Mean Squared Error: {mse_tree}")
+
+# k-NN Regressor
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+knn_regressor = KNeighborsRegressor(n_neighbors=5)
+knn_regressor.fit(X_train_scaled, y_train)
+y_pred_knn = knn_regressor.predict(X_test_scaled)
+mse_knn = mean_squared_error(y_test, y_pred_knn)
+print(f"k-NN Regressor Mean Squared Error: {mse_knn}")
